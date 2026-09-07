@@ -57,8 +57,6 @@ class RichText(Object):
     - :obj:`~pyrogram.types.RichTextAnchorLink`
     - :obj:`~pyrogram.types.RichTextReference`
     - :obj:`~pyrogram.types.RichTextReferenceLink`
-    - :obj:`~pyrogram.types.RichTextImage`
-    - :obj:`~pyrogram.types.RichTextDiff`
     """
 
     def __init__(self):
@@ -71,6 +69,7 @@ class RichText(Object):
         users: Dict[int, "raw.base.User"] = {},
         chats: Dict[int, "raw.base.Chat"] = {},
     ) -> Optional[Union[str, List["RichText"], "RichText"]]:
+        # TODO: fix anchors and references
         if isinstance(rich_text, raw.types.TextPlain):
             return rich_text.text
 
@@ -120,7 +119,7 @@ class RichText(Object):
         if isinstance(rich_text, raw.types.TextMentionName):
             return RichTextTextMention(
                 text=await RichText._parse(client, rich_text.text),
-                user=types.User._parse(client, users.get(rich_text.user_id)),
+                user=await types.User._parse(client, users.get(rich_text.user_id)),
             )
 
         if isinstance(rich_text, raw.types.TextSubscript):
@@ -149,10 +148,12 @@ class RichText(Object):
             if rich_text.url.startswith("#"):
                 anchor = rich_text.url[1:]
 
-                return RichTextAnchorLink(
+                return RichTextReferenceLink(
                     text=content,
-                    anchor_name=anchor,
+                    reference_name=anchor,
                 )
+
+                # TODO: RichTextAnchorLink
 
             return RichTextUrl(text=content, url=rich_text.url)
 
@@ -195,7 +196,7 @@ class RichText(Object):
 
             return RichTextMention(
                 text=content,
-                username=content.lstrip("@"),
+                username=RichText._to_plain_text(content).lstrip("@"),
             )
 
         if isinstance(rich_text, raw.types.TextHashtag):
@@ -203,7 +204,7 @@ class RichText(Object):
 
             return RichTextHashtag(
                 text=content,
-                hashtag=content.lstrip("#"),
+                hashtag=RichText._to_plain_text(content).lstrip("#"),
             )
 
         if isinstance(rich_text, raw.types.TextCashtag):
@@ -211,7 +212,7 @@ class RichText(Object):
 
             return RichTextCashtag(
                 text=content,
-                cashtag=content.lstrip("$"),
+                cashtag=RichText._to_plain_text(content).lstrip("$"),
             )
 
         if isinstance(rich_text, raw.types.TextBotCommand):
@@ -219,7 +220,7 @@ class RichText(Object):
 
             return RichTextBotCommand(
                 text=content,
-                bot_command=content.lstrip("/"),
+                bot_command=RichText._to_plain_text(content).lstrip("/"),
             )
 
         if isinstance(rich_text, raw.types.TextAnchor):
@@ -232,18 +233,28 @@ class RichText(Object):
                 text=await RichText._parse(client, rich_text.text), name=rich_text.name
             )
 
-        if isinstance(rich_text, raw.types.TextImage):
-            return RichTextImage(
-                document_id=rich_text.document_id,
-                width=rich_text.w,
-                height=rich_text.h,
-            )
+        # TODO: if isinstance(rich_text, raw.types.TextImage):
 
-        if isinstance(rich_text, raw.types.TextDiff):
-            return RichTextDiff(
-                text=await RichText._parse(client, rich_text.text),
-                old_text=await RichText._parse(client, rich_text.old_text),
-            )
+    @staticmethod
+    def _to_plain_text(text: "RichText") -> str:
+        if isinstance(text, str):
+            return text
+
+        if isinstance(text, (list, types.List)):
+            return "".join(RichText._to_plain_text(t) for t in text)
+
+        if hasattr(text, "text"):
+            return RichText._to_plain_text(text.text)
+
+        # Math expression
+        if hasattr(text, "expression"):
+            return RichText._to_plain_text(text.expression)
+
+        # Custom emoji
+        if hasattr(text, "alternative_text"):
+            return RichText._to_plain_text(text.alternative_text)
+
+        return ""
 
 
 class RichTextBold(RichText):
@@ -455,7 +466,7 @@ class RichTextCustomEmoji(RichText):
     Parameters:
         custom_emoji_id (``str``):
             Unique identifier of the custom emoji.
-            Use :meth:`~pyrogram.Client.get_custom_emoji_stickers` to get full information about the sticker.
+            Use :meth:`pyrogram.Client.get_custom_emoji_stickers` to get full information about the sticker.
 
         alternative_text (``str``):
             Alternative emoji for the custom emoji.
@@ -591,50 +602,6 @@ class RichTextHashtag(RichText):
 
         self.text = text
         self.hashtag = hashtag
-
-
-class RichTextImage(RichText):
-    """An inline image.
-
-    Parameters:
-        document_id (``int``):
-            Unique identifier of the photo document.
-
-        width (``int``):
-            Width of the image.
-
-        height (``int``):
-            Height of the image.
-    """
-
-    def __init__(self, document_id: int, width: int, height: int):
-        super().__init__()
-
-        self.document_id = document_id
-        self.width = width
-        self.height = height
-
-
-class RichTextDiff(RichText):
-    """A diff text, representing the difference between a text and its previous version.
-
-    Parameters:
-        text (:obj:`~pyrogram.types.RichText`):
-            The new text.
-
-        old_text (:obj:`~pyrogram.types.RichText`):
-            The previous version of the text.
-    """
-
-    def __init__(
-        self,
-        text: "types.RichText",
-        old_text: "types.RichText",
-    ):
-        super().__init__()
-
-        self.text = text
-        self.old_text = old_text
 
 
 class RichTextCashtag(RichText):
