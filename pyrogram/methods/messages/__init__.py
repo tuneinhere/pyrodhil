@@ -42,6 +42,8 @@ from .read_chat_history import ReadChatHistory
 from .read_mentions import ReadMentions
 from .read_reactions import ReadReactions
 from .retract_vote import RetractVote
+from .send_rich_message import SendRichMessage
+from .send_rich_message_draft import SendRichMessageDraft
 from .search_global import SearchGlobal
 from .search_global_count import SearchGlobalCount
 from .search_messages import SearchMessages
@@ -124,6 +126,8 @@ class Messages(
     GetDiscussionRepliesCount,
     StreamMedia,
     GetCustomEmojiStickers,
-    SendScreenshotNotification
+    SendScreenshotNotification,
+    SendRichMessageDraft,
+    SendRichMessage
 ):
     pass
