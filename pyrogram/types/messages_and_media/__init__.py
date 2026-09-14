@@ -98,6 +98,7 @@ from .rich_block import (
     RichBlockUnsupported,
     RichBlockVideo,
     RichBlockVoiceNote,
+    RichBlockExpandableBlockQuotation,
 )
 from .rich_message import RichMessage
 
@@ -139,6 +140,7 @@ __all__ = [
     "RichBlockSlideshow",
     "RichBlockSubheader",
     "RichBlockSubtitle",
+    "RichBlockExpandableBlockQuotation",
     "RichBlockTable",
     "RichBlockTableCell",
     "RichBlockThinking",
