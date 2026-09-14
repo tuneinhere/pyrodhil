@@ -22,7 +22,69 @@ from .input_reply_to_story import InputReplyToStory
 from .input_text_message_content import InputTextMessageContent
 from .input_poll_option import InputPollOption
 from .reply_parameters import ReplyParameters
+from .input_rich_block import (
+    InputRichBlock,
+    InputRichBlockAnchor,
+    InputRichBlockAnimation,
+    InputRichBlockAudio,
+    InputRichBlockBlockQuotation,
+    InputRichBlockButtons,
+    InputRichBlockCollage,
+    InputRichBlockDetails,
+    InputRichBlockDivider,
+    InputRichBlockDocument,
+    InputRichBlockExpandableBlockQuotation,
+    InputRichBlockFooter,
+    InputRichBlockList,
+    InputRichBlockListItem,
+    InputRichBlockMap,
+    InputRichBlockMathematicalExpression,
+    InputRichBlockParagraph,
+    InputRichBlockPhoto,
+    InputRichBlockPreformatted,
+    InputRichBlockPullQuotation,
+    InputRichBlockSectionHeading,
+    InputRichBlockSlideshow,
+    InputRichBlockTable,
+    InputRichBlockThinking,
+    InputRichBlockVideo,
+    InputRichBlockVoiceNote,
+)
+from .input_rich_message import InputRichMessage
+from .input_rich_message_content import InputRichMessageContent
+from .input_rich_message_media import InputRichMessageMedia
+from .input_text_message_content import InputTextMessageContent
 
 __all__ = [
-    "InputMessageContent", "InputReplyToMessage", "InputReplyToStory", "InputTextMessageContent", "InputPollOption", "ReplyParameters"
+    "InputMessageContent", "InputReplyToMessage", "InputReplyToStory", "InputTextMessageContent", "InputPollOption", "ReplyParameters", "InputRichBlock",
+    "InputRichBlockAnchor",
+    "InputRichBlockAnimation",
+    "InputRichBlockAudio",
+    "InputRichBlockBlockQuotation",
+    "InputRichBlockButtons",
+    "InputRichBlockCollage",
+    "InputRichBlockDetails",
+    "InputRichBlockDivider",
+    "InputRichBlockDocument",
+    "InputRichBlockExpandableBlockQuotation",
+    "InputRichBlockFooter",
+    "InputRichBlockList",
+    "InputRichBlockListItem",
+    "InputRichBlockMap",
+    "InputRichBlockMathematicalExpression",
+    "InputRichBlockParagraph",
+    "InputRichBlockPhoto",
+    "InputRichBlockPreformatted",
+    "InputRichBlockPullQuotation",
+    "InputRichBlockSectionHeading",
+    "InputRichBlockSlideshow",
+    "InputRichBlockTable",
+    "InputRichBlockThinking",
+    "InputRichBlockVideo",
+    "InputRichBlockVoiceNote",
+    "InputRichMessage",
+    "InputRichMessageContent",
+    "InputRichMessageMedia",
+    "InputTextMessageContent",
+    "InputVenueMessageContent",
 ]
